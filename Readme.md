@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Nargiza Salomova](https://up.htmlacademy.ru/javascript-individual/2/user/2506775).
-* Наставник: `Неизвестно`.
+* Наставник: `Артём Картавый`.
 
 ---
 
