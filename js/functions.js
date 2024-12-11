@@ -1,10 +1,4 @@
-const checkLength = (string, length) => {
-  if(string.length <= length){
-    return true;
-  } else {
-    return false;
-  }
-};
+const checkLength = (string, length) => string.length <= length;
 
 checkLength('проверяемая строка', 18);
 
@@ -17,35 +11,23 @@ const isPalindromeString = (string) => {
     invertedString += newString[i];
   }
 
-  if(newString === invertedString){
-    return true;
-  } else {
-    return false;
-  }
+  return newString === invertedString;
+
 };
 
 isPalindromeString('Лёша на полке клопа нашёл ');
 
 const getNumber = (string) => {
-
   const replacedString = string.replaceAll(' ','');
   let numberString = '';
 
   for(let i = 0; i <= replacedString.length - 1; i++){
-    if(isNaN(replacedString[i]) === false){
-
-      if(replacedString[i] < 0){
-        numberString += Math.abs(replacedString[i]);
-      }
-
+    if(!isNaN(replacedString[i])){
       numberString += replacedString[i];
     }
   }
-  if(numberString === ''){
-    return NaN;
-  }
-  const number = Number(numberString);
-  return number;
+
+  return parseInt(numberString, 10);
 };
 
 getNumber('ECMAScript 2022');
