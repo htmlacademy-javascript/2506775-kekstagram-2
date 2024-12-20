@@ -47,3 +47,4 @@ const photoDescription = () => ({
 
 const photoArray = Array.from({length: photoPublished}, () => photoDescription());
 
+console.log(photoArray);
