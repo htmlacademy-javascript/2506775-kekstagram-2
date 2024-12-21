@@ -42,9 +42,9 @@ const photoDescription = () => ({
   url:`photo/${ getPhoto() }.jpg`,
   description:'Моменты, которые запечатлены навсегда',
   likes:getRandomInteger(15, 200),
-  comments: Array.from({length: getRandomInteger(0, 30)}, () => commentGenerator())
+  comments: Array.from({length: getRandomInteger(0, 30)}, commentGenerator)
 });
 
-const photoArray = Array.from({length: photoPublished}, () => photoDescription());
+const photoArray = Array.from({length: photoPublished}, photoDescription);
 
 console.log(photoArray);
