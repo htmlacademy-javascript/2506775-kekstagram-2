@@ -1,4 +1,26 @@
-const photoPublished = 25;
+const getRandomInteger = (a, b) => {
+  const lower = Math.ceil(Math.min(a, b));
+  const upper = Math.floor(Math.max(a, b));
+  const result = Math.random() * (upper - lower + 1) + lower;
+  return Math.floor(result);
+};
+
+const idGenerator = () => {
+  let currentId = 0;
+  return () => ++currentId;
+};
+
+const PHOTO_PUBLISHED_COUNT = 25;
+const PHOTO_DESCRIPTION = 'Моменты, которые запечатлены навсегда';
+
+const AVATAR_COUNT_FROM = 1;
+const AVATAR_COUNT_TO = 6;
+
+const LIKES_COUNT_FROM = 15;
+const LIKES_COUNT_TO = 200;
+
+const COMMENTS_COUNT_FROM = 0;
+const COMMENTS_COUNT_TO = 30;
 
 const NAMES = ['София', 'Артем', 'Ева', 'Амина', 'Давид', 'Максим', 'Дарина', 'Алия', 'Амелия', 'Дамир', 'Арслан'];
 
@@ -11,26 +33,14 @@ const MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-const idGenerator = () => {
-  let currentId = 0;
-  return () => ++currentId;
-};
-
-const getId = idGenerator();
+const getPhotoId = idGenerator();
 const getPhoto = idGenerator();
-const getIdComment = idGenerator();
-
-const getRandomInteger = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
+const getCommentId = idGenerator();
 
 const commentGenerator = () => {
   const comment = {
-    id:getIdComment(),
-    avatar:`img/avatar-${getRandomInteger(1, 6)}`,
+    id:getCommentId(),
+    avatar:`img/avatar-${getRandomInteger(AVATAR_COUNT_FROM, AVATAR_COUNT_TO)}`,
     message:MESSAGES[getRandomInteger(0, MESSAGES.length - 1)],
     name:NAMES[getRandomInteger(0, NAMES.length - 1)]
   };
@@ -38,13 +48,13 @@ const commentGenerator = () => {
 };
 
 const photoDescription = () => ({
-  id:getId(),
-  url:`photo/${ getPhoto() }.jpg`,
-  description:'Моменты, которые запечатлены навсегда',
-  likes:getRandomInteger(15, 200),
-  comments: Array.from({length: getRandomInteger(0, 30)}, commentGenerator)
+  id: getPhotoId(),
+  url:`photo/${getPhoto()}.jpg`,
+  description:PHOTO_DESCRIPTION,
+  likes:getRandomInteger(LIKES_COUNT_FROM,LIKES_COUNT_TO),
+  comments: Array.from({length:getRandomInteger(COMMENTS_COUNT_FROM, COMMENTS_COUNT_TO)}, commentGenerator)
 });
 
-const photoArray = Array.from({length: photoPublished}, photoDescription);
+const photoArray = Array.from({length:PHOTO_PUBLISHED_COUNT}, photoDescription);
 
 console.log(photoArray);
