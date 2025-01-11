@@ -31,3 +31,29 @@ const getNumber = (string) => {
 };
 
 getNumber('ECMAScript 2022');
+
+
+// Напишите функцию, которая принимает время начала и конца рабочего дня, а также время старта и продолжительность встречи в минутах и возвращает true, если встреча не выходит за рамки рабочего дня, и false, если выходит.
+
+// Время указывается в виде строки в формате часы:минуты. Для указания часов и минут могут использоваться как две цифры, так и одна. Например, 8 часов 5 минут могут быть указаны по-разному: 08:05, 8:5, 08:5 или 8:05.
+
+// Продолжительность задаётся числом. Гарантируется, что и рабочий день, и встреча укладываются в одни календарные сутки.
+
+function parseTime(time){
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+}
+
+const isMeeting = (startWork, endWork, startMeeting, duration) => {
+  const workStart = parseTime(startWork);
+  const workEnd = parseTime(endWork);
+  const meetingStart = parseTime(startMeeting);
+
+  const meetingEnd = meetingStart + duration;
+
+  const isTimeOfMeeting = meetingStart >= workStart && meetingEnd <= workEnd;
+
+  return isTimeOfMeeting;
+};
+
+isMeeting();
