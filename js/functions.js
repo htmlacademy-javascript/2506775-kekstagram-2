@@ -56,4 +56,4 @@ const isMeeting = (startWork, endWork, startMeeting, duration) => {
   return isTimeOfMeeting;
 };
 
-isMeeting();
+isMeeting('14:00', '17:30', '08:0', 90);
