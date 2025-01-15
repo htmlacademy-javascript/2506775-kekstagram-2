@@ -40,8 +40,9 @@ getNumber('ECMAScript 2022');
 // Продолжительность задаётся числом. Гарантируется, что и рабочий день, и встреча укладываются в одни календарные сутки.
 
 function parseTime(time){
+  const oneHoureInMinutes = 60;
   const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
+  return hours * oneHoureInMinutes + minutes;
 }
 
 const isMeeting = (startWork, endWork, startMeeting, duration) => {
@@ -51,9 +52,7 @@ const isMeeting = (startWork, endWork, startMeeting, duration) => {
 
   const meetingEnd = meetingStart + duration;
 
-  const isTimeOfMeeting = meetingStart >= workStart && meetingEnd <= workEnd;
-
-  return isTimeOfMeeting;
+  return meetingStart >= workStart && meetingEnd <= workEnd;
 };
 
 isMeeting('14:00', '17:30', '08:0', 90);
