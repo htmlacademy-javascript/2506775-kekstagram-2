@@ -1,3 +1,5 @@
+const MINUTES = 60;
+
 const checkLength = (string, length) => string.length <= length;
 
 checkLength('проверяемая строка', 18);
@@ -40,9 +42,8 @@ getNumber('ECMAScript 2022');
 // Продолжительность задаётся числом. Гарантируется, что и рабочий день, и встреча укладываются в одни календарные сутки.
 
 function parseTime(time){
-  const oneHoureInMinutes = 60;
   const [hours, minutes] = time.split(':').map(Number);
-  return hours * oneHoureInMinutes + minutes;
+  return hours * MINUTES + minutes;
 }
 
 const isMeeting = (startWork, endWork, startMeeting, duration) => {
