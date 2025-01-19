@@ -1,4 +1,4 @@
-const MINUTES = 60;
+const MINUTES_IN_HOUR = 60;
 
 const checkLength = (string, length) => string.length <= length;
 
@@ -43,7 +43,7 @@ getNumber('ECMAScript 2022');
 
 function parseTime(time){
   const [hours, minutes] = time.split(':').map(Number);
-  return hours * MINUTES + minutes;
+  return hours * MINUTES_IN_HOUR + minutes;
 }
 
 const isMeeting = (startWork, endWork, startMeeting, duration) => {
