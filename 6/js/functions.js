@@ -1,3 +1,5 @@
+const MINUTES_IN_HOUR = 60;
+
 const checkLength = (string, length) => string.length <= length;
 
 checkLength('проверяемая строка', 18);
@@ -41,7 +43,7 @@ getNumber('ECMAScript 2022');
 
 function parseTime(time){
   const [hours, minutes] = time.split(':').map(Number);
-  return hours * 60 + minutes;
+  return hours * MINUTES_IN_HOUR + minutes;
 }
 
 const isMeeting = (startWork, endWork, startMeeting, duration) => {
@@ -51,9 +53,7 @@ const isMeeting = (startWork, endWork, startMeeting, duration) => {
 
   const meetingEnd = meetingStart + duration;
 
-  const isTimeOfMeeting = meetingStart >= workStart && meetingEnd <= workEnd;
-
-  return isTimeOfMeeting;
+  return meetingStart >= workStart && meetingEnd <= workEnd;
 };
 
 isMeeting('14:00', '17:30', '08:0', 90);
