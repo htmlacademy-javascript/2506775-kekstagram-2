@@ -1,3 +1,6 @@
 import { getPhotos } from './modules/photo-desc';
+import { genPicture } from './modules/photo-template';
 
-getPhotos();
+const photosArray = getPhotos();
+genPicture(photosArray);
+
