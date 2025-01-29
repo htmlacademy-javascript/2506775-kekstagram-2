@@ -17,7 +17,7 @@ const getPhotoDescription = () => {
   const id = getPhotoId();
   return {
     id: id,
-    url:`photo/${id}.jpg`,
+    url:`photos/${id}.jpg`,
     description:PHOTO_DESCRIPTION,
     likes:getRandomInteger(LIKES_COUNT_FROM,LIKES_COUNT_TO),
     comments: Array.from({length:getRandomInteger(COMMENTS_COUNT_FROM, COMMENTS_COUNT_TO)}, getComments)
