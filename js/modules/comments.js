@@ -24,6 +24,7 @@ const getComments = () => {
     message:MESSAGES[getRandomInteger(0, MESSAGES.length - 1)],
     name:NAMES[getRandomInteger(0, NAMES.length - 1)]
   };
+
   return comment;
 };
 
