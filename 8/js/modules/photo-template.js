@@ -1,5 +1,5 @@
 import { openWindow } from './full-image';
-import { COMMENTS_COUNT_TO } from './photo-desc';
+import { closeWithEscape } from './full-image';
 
 const container = document.querySelector('.pictures');
 const templateFragment = document.querySelector('#picture').content;
@@ -7,6 +7,8 @@ const template = templateFragment.querySelector('.picture');
 
 const getPicture = function(item){
   const element = template.cloneNode(true);
+
+  element.dataset.pictureId = item.id;
 
   const image = element.querySelector('.picture__img');
   image.src = item.url;
@@ -17,9 +19,10 @@ const getPicture = function(item){
 
   const comments = element.querySelector('.picture__comments');
   comments.innerHTML = item.comments.length;
-  // console.log(element);
+
   return element;
 };
+
 
 const displaysPictures = (arrayOfPictures) => {
   const fragment = document.createDocumentFragment();
@@ -33,16 +36,13 @@ const displaysPictures = (arrayOfPictures) => {
 };
 
 container.addEventListener('click', (evt) => {
-  const currenrPicture = evt.target.closest('.picture');
+  const currentPicture = evt.target.closest('.picture');
 
-  if(currenrPicture){
-    const miniImage = currenrPicture.querySelector('img');
-    const currentImageLikes = currenrPicture.querySelector('.picture__likes').textContent;
-    const currentImageCommentsCount = currenrPicture.querySelector('.picture__comments').textContent;
+  if(currentPicture){
+    openWindow(currentPicture.dataset.pictureId);
+    document.querySelector('body').classList.add('modal-open');
 
-    openWindow(miniImage, currentImageLikes, currentImageCommentsCount, COMMENTS_COUNT_TO);
-
-    console.log(currenrPicture);
+    document.addEventListener('keydown', closeWithEscape);
   }
 });
 
