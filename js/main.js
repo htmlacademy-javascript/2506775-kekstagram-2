@@ -1,5 +1,6 @@
-import { getPhotos } from './modules/photo-desc';
+import { photoslist} from './modules/full-image';
 import { displaysPictures } from './modules/photo-template';
 
-displaysPictures(getPhotos());
+displaysPictures(photoslist);
+// console.log(getPhotos());
 

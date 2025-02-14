@@ -20,7 +20,7 @@ const MESSAGES = [
 const getComments = () => {
   const comment = {
     id:getCommentId(),
-    avatar:`img/avatar-${getRandomInteger(AVATAR_COUNT_FROM, AVATAR_COUNT_TO)}`,
+    avatar:`img/avatar-${getRandomInteger(AVATAR_COUNT_FROM, AVATAR_COUNT_TO)}.svg`,
     message:MESSAGES[getRandomInteger(0, MESSAGES.length - 1)],
     name:NAMES[getRandomInteger(0, NAMES.length - 1)]
   };
