@@ -1,8 +1,5 @@
-import { getPhotos } from './photo-desc';
 import { COMMENTS_COUNT_TO } from './photo-desc';
 import { isEscapeKey } from './util';
-
-const photoslist = getPhotos();
 
 const windowWithBigPicture = document.querySelector('.big-picture');
 const commentsCountBlock = windowWithBigPicture.querySelector('.social__comment-count');
@@ -18,10 +15,34 @@ const descriptionOnWindow = windowWithBigPicture.querySelector('.social__caption
 
 const closeButton = document.querySelector('.big-picture__cancel');
 
+const onDocumentKeyDown = (evt) => {
+  if(isEscapeKey(evt)){
+    evt.preventDefault();
+    removeBigWindow();
+  }
+};
 
-const createComments = (elementComments) => {
+function removeBigWindow() {
+  windowWithBigPicture.classList.add('hidden');
+  document.querySelector('body').classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeyDown);
+}
+
+const openWindow = (item) => {
   const commentsFragment = document.createDocumentFragment();
-  elementComments.comments.forEach((comment) => {
+
+  windowWithBigPicture.classList.remove('hidden');
+  commentsCountBlock.classList.add('hidden');
+  commentsLoader.classList.add('hidden');
+
+  commentsTotal.textContent = COMMENTS_COUNT_TO;
+  bigImage.src = item.url;
+  likesCount.textContent = item.likes;
+  descriptionOnWindow.textContent = item.description;
+  commentsCount.textContent = item.comments.length;
+
+  socialComments.innerHTML = '';
+  item.comments.forEach((comment) => {
     const commentTemplate = socialComment.cloneNode(true);
 
     commentTemplate.querySelector('.social__picture').src = comment.avatar;
@@ -32,35 +53,14 @@ const createComments = (elementComments) => {
   });
 
   socialComments.append(commentsFragment);
+
+  document.querySelector('body').classList.add('modal-open');
+
+  document.addEventListener('keydown', onDocumentKeyDown);
+
+  closeButton.addEventListener('click', () =>{
+    removeBigWindow();
+  });
 };
 
-const openWindow = (pictureId) => {
-  const currentPhoto = photoslist.find((photo) => photo.id === Number(pictureId));
-  windowWithBigPicture.classList.remove('hidden');
-  commentsCountBlock.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
-
-
-  commentsTotal.textContent = COMMENTS_COUNT_TO;
-  bigImage.src = currentPhoto.url;
-  likesCount.textContent = currentPhoto.likes;
-  descriptionOnWindow.textContent = currentPhoto.description;
-  commentsCount.textContent = currentPhoto.comments.length;
-
-
-  createComments(currentPhoto);
-};
-
-const closeWithEscape = (evt) => {
-  if(isEscapeKey(evt)){
-    evt.preventDefault();
-    windowWithBigPicture.classList.add('hidden');
-  }
-};
-
-closeButton.addEventListener('click', () =>{
-  windowWithBigPicture.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
-});
-
-export{openWindow, photoslist, closeWithEscape};
+export{openWindow};

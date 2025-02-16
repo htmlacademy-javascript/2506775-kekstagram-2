@@ -1,9 +1,11 @@
 import { openWindow } from './full-image';
-import { closeWithEscape } from './full-image';
+import { getPhotos } from './photo-desc';
 
 const container = document.querySelector('.pictures');
 const templateFragment = document.querySelector('#picture').content;
 const template = templateFragment.querySelector('.picture');
+
+const photoslist = getPhotos();
 
 const getPicture = function(item){
   const element = template.cloneNode(true);
@@ -39,11 +41,10 @@ container.addEventListener('click', (evt) => {
   const currentPicture = evt.target.closest('.picture');
 
   if(currentPicture){
-    openWindow(currentPicture.dataset.pictureId);
-    document.querySelector('body').classList.add('modal-open');
-
-    document.addEventListener('keydown', closeWithEscape);
+    evt.preventDefault();
+    const currentPhoto = photoslist.find((photo) => photo.id === Number(currentPicture.dataset.pictureId));
+    openWindow(currentPhoto);
   }
 });
 
-export {displaysPictures};
+export {displaysPictures, photoslist};
