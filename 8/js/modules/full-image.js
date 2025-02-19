@@ -1,9 +1,9 @@
-import { COMMENTS_COUNT_TO } from './photo-desc';
 import { isEscapeKey } from './util';
 
+let sliceCounterMax = 0;
+
 const windowWithBigPicture = document.querySelector('.big-picture');
-const commentsCountBlock = windowWithBigPicture.querySelector('.social__comment-count');
-const commentsLoader = windowWithBigPicture.querySelector('.comments-loader');
+const onCommentsLoader = windowWithBigPicture.querySelector('.comments-loader');
 const socialComments = windowWithBigPicture.querySelector('.social__comments');
 const socialComment = socialComments.querySelector('.social__comment');
 
@@ -13,54 +13,76 @@ const commentsCount = windowWithBigPicture.querySelector('.social__comment-shown
 const commentsTotal = windowWithBigPicture.querySelector('.social__comment-total-count');
 const descriptionOnWindow = windowWithBigPicture.querySelector('.social__caption');
 
-const closeButton = document.querySelector('.big-picture__cancel');
+const onCloseButton = document.querySelector('.big-picture__cancel');
 
-const onDocumentKeyDown = (evt) => {
-  if(isEscapeKey(evt)){
-    evt.preventDefault();
-    removeBigWindow();
+function showComments (commentsArray) {
+  const commentsFragment = document.createDocumentFragment();
+
+  for(let i = 0; i < 5; i++){
+    if(sliceCounterMax < commentsArray.length){
+      const commentTemplate = socialComment.cloneNode(true);
+
+      commentTemplate.querySelector('.social__picture').src = commentsArray[i].avatar;
+      commentTemplate.querySelector('.social__picture').alt = commentsArray[i].name;
+      commentTemplate.querySelector('.social__text').textContent = commentsArray[i].message;
+
+      commentsFragment.append(commentTemplate);
+      sliceCounterMax++;
+
+      if(sliceCounterMax === commentsArray.length){
+        onCommentsLoader.classList.add('hidden');
+      }
+    } else {
+      onCommentsLoader.classList.add('hidden');
+    }
+    socialComments.append(commentsFragment);
+    commentsCount.textContent = sliceCounterMax;
   }
-};
-
-function removeBigWindow() {
-  windowWithBigPicture.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeyDown);
 }
 
 const openWindow = (item) => {
-  const commentsFragment = document.createDocumentFragment();
-
+  socialComments.innerHTML = '';
+  document.querySelector('body').classList.add('modal-open');
   windowWithBigPicture.classList.remove('hidden');
-  commentsCountBlock.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
+  onCommentsLoader.classList.remove('hidden');
 
-  commentsTotal.textContent = COMMENTS_COUNT_TO;
+  commentsTotal.textContent = item.comments.length;
   bigImage.src = item.url;
   likesCount.textContent = item.likes;
   descriptionOnWindow.textContent = item.description;
-  commentsCount.textContent = item.comments.length;
 
-  socialComments.innerHTML = '';
-  item.comments.forEach((comment) => {
-    const commentTemplate = socialComment.cloneNode(true);
 
-    commentTemplate.querySelector('.social__picture').src = comment.avatar;
-    commentTemplate.querySelector('.social__picture').alt = comment.name;
-    commentTemplate.querySelector('.social__text').textContent = comment.message;
+  const loadMoreHandler = () => {
+    showComments(item.comments);
+  };
 
-    commentsFragment.append(commentTemplate);
-  });
+  onCommentsLoader.addEventListener('click', loadMoreHandler);
 
-  socialComments.append(commentsFragment);
+  loadMoreHandler();
 
-  document.querySelector('body').classList.add('modal-open');
+
+  const onDocumentKeyDown = (evt) => {
+    if(isEscapeKey(evt)){
+      evt.preventDefault();
+      removeBigWindow();
+    }
+  };
 
   document.addEventListener('keydown', onDocumentKeyDown);
 
-  closeButton.addEventListener('click', () =>{
+
+  function removeBigWindow() {
+    windowWithBigPicture.classList.add('hidden');
+    document.querySelector('body').classList.remove('modal-open');
+    document.removeEventListener('keydown', onDocumentKeyDown);
+    onCommentsLoader.removeEventListener('click', loadMoreHandler);
+    sliceCounterMax = 0;
+  }
+
+  onCloseButton.addEventListener('click', () =>{
     removeBigWindow();
   });
 };
+
 
 export{openWindow};
