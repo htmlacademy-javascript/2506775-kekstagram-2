@@ -1,3 +1,7 @@
+const keysToProcess = {
+  Escape: 'Escape'
+};
+
 const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -11,4 +15,6 @@ const getId = () => {
   return () => ++currentId;
 };
 
-export {getRandomInteger, getId};
+const isEscapeKey = (evt) => evt.key === keysToProcess.Escape;
+
+export {getRandomInteger, getId, isEscapeKey};
