@@ -36,31 +36,27 @@ function showComments (commentsArray) {
 
       sliceCounterMin++;
 
-      if(sliceCounterMin === commentsArray.length){
-        onCommentsLoader.classList.add('hidden');
-      }
-    } else {
-      onCommentsLoader.classList.add('hidden');
+      onCommentsLoader.classList.toggle('hidden', sliceCounterMin === commentsArray.length);
     }
     socialComments.append(commentsFragment);
     commentsCount.textContent = sliceCounterMin;
   }
 }
 
-const openWindow = (item) => {
+const openWindow = ({comments, url, likes, description}) => {
   socialComments.innerHTML = '';
   document.querySelector('body').classList.add('modal-open');
   windowWithBigPicture.classList.remove('hidden');
   onCommentsLoader.classList.remove('hidden');
 
-  commentsTotal.textContent = item.comments.length;
-  bigImage.src = item.url;
-  likesCount.textContent = item.likes;
-  descriptionOnWindow.textContent = item.description;
+  commentsTotal.textContent = comments.length;
+  bigImage.src = url;
+  likesCount.textContent = likes;
+  descriptionOnWindow.textContent = description;
 
 
   const loadMoreComments = () => {
-    showComments(item.comments);
+    showComments(comments);
   };
 
   onCommentsLoader.addEventListener('click', loadMoreComments);
