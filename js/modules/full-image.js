@@ -4,7 +4,7 @@ let sliceCounterMin = 0;
 const SLICECOUNTERMAX = 5;
 
 const windowWithBigPicture = document.querySelector('.big-picture');
-const onCommentsLoader = windowWithBigPicture.querySelector('.comments-loader');
+const сommentsLoader = windowWithBigPicture.querySelector('.comments-loader');
 const socialComments = windowWithBigPicture.querySelector('.social__comments');
 const socialComment = socialComments.querySelector('.social__comment');
 
@@ -15,9 +15,9 @@ const commentsTotal = windowWithBigPicture.querySelector('.social__comment-total
 const descriptionOnWindow = windowWithBigPicture.querySelector('.social__caption');
 const commentsFragment = document.createDocumentFragment();
 
-const onCloseButton = document.querySelector('.big-picture__cancel');
+const сloseButton = document.querySelector('.big-picture__cancel');
 
-function createCommentFragment (comment) {
+const createCommentFragment = (comment) => {
   const commentTemplate = socialComment.cloneNode(true);
 
   commentTemplate.querySelector('.social__picture').src = comment.avatar;
@@ -25,9 +25,9 @@ function createCommentFragment (comment) {
   commentTemplate.querySelector('.social__text').textContent = comment.message;
 
   commentsFragment.append(commentTemplate);
-}
+};
 
-function showComments (commentsArray) {
+const showComments = (commentsArray) => {
 
   for(let i = 0; i < SLICECOUNTERMAX; i++){
     if(sliceCounterMin < commentsArray.length){
@@ -36,18 +36,18 @@ function showComments (commentsArray) {
 
       sliceCounterMin++;
 
-      onCommentsLoader.classList.toggle('hidden', sliceCounterMin === commentsArray.length);
+      сommentsLoader.classList.toggle('hidden', sliceCounterMin === commentsArray.length);
     }
     socialComments.append(commentsFragment);
     commentsCount.textContent = sliceCounterMin;
   }
-}
+};
 
 const openWindow = ({comments, url, likes, description}) => {
   socialComments.innerHTML = '';
   document.querySelector('body').classList.add('modal-open');
   windowWithBigPicture.classList.remove('hidden');
-  onCommentsLoader.classList.remove('hidden');
+  сommentsLoader.classList.remove('hidden');
 
   commentsTotal.textContent = comments.length;
   bigImage.src = url;
@@ -55,13 +55,13 @@ const openWindow = ({comments, url, likes, description}) => {
   descriptionOnWindow.textContent = description;
 
 
-  const loadMoreComments = () => {
+  const onCommentsLoaderClick = () => {
     showComments(comments);
   };
 
-  onCommentsLoader.addEventListener('click', loadMoreComments);
+  сommentsLoader.addEventListener('click', onCommentsLoaderClick);
 
-  loadMoreComments();
+  onCommentsLoaderClick();
 
 
   const onDocumentKeyDown = (evt) => {
@@ -78,11 +78,11 @@ const openWindow = ({comments, url, likes, description}) => {
     windowWithBigPicture.classList.add('hidden');
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', onDocumentKeyDown);
-    onCommentsLoader.removeEventListener('click', loadMoreComments);
+    сommentsLoader.removeEventListener('click', onCommentsLoaderClick);
     sliceCounterMin = 0;
   }
 
-  onCloseButton.addEventListener('click', () =>{
+  сloseButton.addEventListener('click', () =>{
     removeBigWindow();
   });
 };
