@@ -26,4 +26,4 @@ const getPhotoDescription = () => {
 
 const getPhotos = (photoCount = PHOTO_PUBLISHED_COUNT) => Array.from({length:photoCount}, getPhotoDescription);
 
-export {getPhotos};
+export {getPhotos, COMMENTS_COUNT_TO};

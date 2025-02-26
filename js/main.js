@@ -1,5 +1,5 @@
-import { getPhotos } from './modules/photo-desc';
+import { photoslist } from './modules/photo-template';
 import { displaysPictures } from './modules/photo-template';
 
-displaysPictures(getPhotos());
+displaysPictures(photoslist);
 
