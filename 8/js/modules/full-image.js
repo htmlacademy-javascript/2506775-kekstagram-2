@@ -1,9 +1,10 @@
 import { isEscapeKey } from './util';
 
-let sliceCounterMax = 0;
+let sliceCounterMin = 0;
+const SLICECOUNTERMAX = 5;
 
 const windowWithBigPicture = document.querySelector('.big-picture');
-const onCommentsLoader = windowWithBigPicture.querySelector('.comments-loader');
+const сommentsLoader = windowWithBigPicture.querySelector('.comments-loader');
 const socialComments = windowWithBigPicture.querySelector('.social__comments');
 const socialComment = socialComments.querySelector('.social__comment');
 
@@ -12,53 +13,55 @@ const likesCount = windowWithBigPicture.querySelector('.likes-count');
 const commentsCount = windowWithBigPicture.querySelector('.social__comment-shown-count');
 const commentsTotal = windowWithBigPicture.querySelector('.social__comment-total-count');
 const descriptionOnWindow = windowWithBigPicture.querySelector('.social__caption');
+const commentsFragment = document.createDocumentFragment();
 
-const onCloseButton = document.querySelector('.big-picture__cancel');
+const сloseButton = document.querySelector('.big-picture__cancel');
 
-function showComments (commentsArray) {
-  const commentsFragment = document.createDocumentFragment();
+const createCommentFragment = (comment) => {
+  const commentTemplate = socialComment.cloneNode(true);
 
-  for(let i = 0; i < 5; i++){
-    if(sliceCounterMax < commentsArray.length){
-      const commentTemplate = socialComment.cloneNode(true);
+  commentTemplate.querySelector('.social__picture').src = comment.avatar;
+  commentTemplate.querySelector('.social__picture').alt = comment.name;
+  commentTemplate.querySelector('.social__text').textContent = comment.message;
 
-      commentTemplate.querySelector('.social__picture').src = commentsArray[i].avatar;
-      commentTemplate.querySelector('.social__picture').alt = commentsArray[i].name;
-      commentTemplate.querySelector('.social__text').textContent = commentsArray[i].message;
+  commentsFragment.append(commentTemplate);
+};
 
-      commentsFragment.append(commentTemplate);
-      sliceCounterMax++;
+const showComments = (commentsArray) => {
 
-      if(sliceCounterMax === commentsArray.length){
-        onCommentsLoader.classList.add('hidden');
-      }
-    } else {
-      onCommentsLoader.classList.add('hidden');
+  for(let i = 0; i < SLICECOUNTERMAX; i++){
+    if(sliceCounterMin < commentsArray.length){
+
+      createCommentFragment (commentsArray[i]);
+
+      sliceCounterMin++;
+
+      сommentsLoader.classList.toggle('hidden', sliceCounterMin === commentsArray.length);
     }
     socialComments.append(commentsFragment);
-    commentsCount.textContent = sliceCounterMax;
+    commentsCount.textContent = sliceCounterMin;
   }
-}
+};
 
-const openWindow = (item) => {
+const openWindow = ({comments, url, likes, description}) => {
   socialComments.innerHTML = '';
   document.querySelector('body').classList.add('modal-open');
   windowWithBigPicture.classList.remove('hidden');
-  onCommentsLoader.classList.remove('hidden');
+  сommentsLoader.classList.remove('hidden');
 
-  commentsTotal.textContent = item.comments.length;
-  bigImage.src = item.url;
-  likesCount.textContent = item.likes;
-  descriptionOnWindow.textContent = item.description;
+  commentsTotal.textContent = comments.length;
+  bigImage.src = url;
+  likesCount.textContent = likes;
+  descriptionOnWindow.textContent = description;
 
 
-  const loadMoreHandler = () => {
-    showComments(item.comments);
+  const onCommentsLoaderClick = () => {
+    showComments(comments);
   };
 
-  onCommentsLoader.addEventListener('click', loadMoreHandler);
+  сommentsLoader.addEventListener('click', onCommentsLoaderClick);
 
-  loadMoreHandler();
+  onCommentsLoaderClick();
 
 
   const onDocumentKeyDown = (evt) => {
@@ -75,11 +78,11 @@ const openWindow = (item) => {
     windowWithBigPicture.classList.add('hidden');
     document.querySelector('body').classList.remove('modal-open');
     document.removeEventListener('keydown', onDocumentKeyDown);
-    onCommentsLoader.removeEventListener('click', loadMoreHandler);
-    sliceCounterMax = 0;
+    сommentsLoader.removeEventListener('click', onCommentsLoaderClick);
+    sliceCounterMin = 0;
   }
 
-  onCloseButton.addEventListener('click', () =>{
+  сloseButton.addEventListener('click', () =>{
     removeBigWindow();
   });
 };
