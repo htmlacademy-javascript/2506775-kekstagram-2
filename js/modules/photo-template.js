@@ -1,5 +1,5 @@
-import { openWindow } from './full-image';
-import { getPhotos } from './photo-desc';
+import { openWindow } from './full-image.js';
+import { getPhotos } from './photo-desc.js';
 
 const container = document.querySelector('.pictures');
 const templateFragment = document.querySelector('#picture').content;

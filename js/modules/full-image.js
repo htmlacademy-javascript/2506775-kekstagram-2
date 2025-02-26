@@ -1,4 +1,4 @@
-import { isEscapeKey } from './util';
+import { isEscapeKey } from './util.js';
 
 let sliceCounterMin = 0;
 const SLICECOUNTERMAX = 5;
