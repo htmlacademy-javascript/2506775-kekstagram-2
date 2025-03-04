@@ -31,3 +31,13 @@ function closeUploadWindow() {
 imageUploadInput.addEventListener('change', openUploadWindow);
 
 imageUploadCancle.addEventListener('click', closeUploadWindow);
+
+formUpload.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const isValid = pristine.validate();
+  if(isValid){
+    console.log('valid');
+  } else{
+    console.log('novalid');
+  }
+});
