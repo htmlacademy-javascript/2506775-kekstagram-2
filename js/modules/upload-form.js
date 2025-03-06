@@ -26,18 +26,29 @@ const onDocumentKeyDown = (evt) => {
   }
 };
 
+const onCancleKeyDown = (evt) => {
+  if(isEscapeKey(evt)){
+    evt.stopPropagation();
+  }
+};
+
 const openUploadWindow = () => {
   imageOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  uploadHashtag.addEventListener('keydown', onCancleKeyDown);
+  uploadComment.addEventListener('keydown', onCancleKeyDown);
   document.addEventListener('keydown', onDocumentKeyDown);
 };
 
 function closeUploadWindow() {
   imageUploadInput.value = '';
   uploadHashtag.value = '';
+  uploadComment.value = '';
   imageOverlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeyDown);
+  uploadHashtag.removeEventListener('focus', onCancleKeyDown);
+  uploadComment.removeEventListener('focus', onCancleKeyDown);
 }
 
 imageUploadInput.addEventListener('change', openUploadWindow);
@@ -45,18 +56,20 @@ imageUploadInput.addEventListener('change', openUploadWindow);
 imageUploadCancle.addEventListener('click', closeUploadWindow);
 
 const getHashtagsArray = (element) => {
-  const hashtagsArray = element.trim().toLowerCase().split(' ');
+  const hashtagsArray = element.toLowerCase().split(/\s+/).filter((item) => item !== '');
   return hashtagsArray;
 };
 
 const getHashtagsName = (element) => {
   const hashtagsName = getHashtagsArray(element);
   const newArray = [];
+
   hashtagsName.forEach((hashtag) => {
     if(regexp.test(hashtag) === true) {
       newArray.push(hashtag);
     }
   });
+
   return hashtagsName.length === newArray.length;
 };
 
