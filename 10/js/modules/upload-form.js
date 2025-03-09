@@ -1,13 +1,20 @@
 import { isEscapeKey } from './util';
 
-const regexp = /^#[a-zф-яё0-9]{1,19}$/i;
 const HASHTAGS_COUNT = 5;
 const COMMENT_LENGTH = 140;
+const REGEXP = /^#[a-zф-яё0-9]{1,19}$/i;
+
+const errorMessage = {
+  invalidName: 'введён невалидный хэштег',
+  hashtagsLimit: 'превышено количество хэштегов',
+  hashtagsRepeat: 'хэштеги повторяются',
+  commentsLength: 'длина комментария больше 140 символов'
+};
 
 const formUpload = document.querySelector('.img-upload__form');
 const imageUploadInput = formUpload.querySelector('.img-upload__input');
 const imageOverlay = formUpload.querySelector('.img-upload__overlay');
-const imageUploadCancle = formUpload.querySelector('.img-upload__cancel');
+const imageUploadCancel = formUpload.querySelector('.img-upload__cancel');
 const uploadHashtag = formUpload.querySelector('.text__hashtags');
 const uploadComment = formUpload.querySelector('.text__description');
 
@@ -22,7 +29,7 @@ const pristine = new Pristine(formUpload, {
 const onDocumentKeyDown = (evt) => {
   if(isEscapeKey(evt)){
     evt.preventDefault();
-    closeUploadWindow();
+    onCloseUploadWindow();
   }
 };
 
@@ -32,7 +39,7 @@ const onCancleKeyDown = (evt) => {
   }
 };
 
-const openUploadWindow = () => {
+const onOpenUploadWindow = () => {
   imageOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
   uploadHashtag.addEventListener('keydown', onCancleKeyDown);
@@ -40,7 +47,7 @@ const openUploadWindow = () => {
   document.addEventListener('keydown', onDocumentKeyDown);
 };
 
-function closeUploadWindow() {
+function onCloseUploadWindow() {
   imageUploadInput.value = '';
   uploadHashtag.value = '';
   uploadComment.value = '';
@@ -51,26 +58,19 @@ function closeUploadWindow() {
   uploadComment.removeEventListener('focus', onCancleKeyDown);
 }
 
-imageUploadInput.addEventListener('change', openUploadWindow);
+imageUploadInput.addEventListener('change', onOpenUploadWindow);
 
-imageUploadCancle.addEventListener('click', closeUploadWindow);
+imageUploadCancel.addEventListener('click', onCloseUploadWindow);
 
 const getHashtagsArray = (element) => {
-  const hashtagsArray = element.toLowerCase().split(/\s+/).filter((item) => item !== '');
+  const hashtagsArray = element.toLowerCase().split(/\s+/).filter(Boolean);
   return hashtagsArray;
 };
 
 const getHashtagsName = (element) => {
   const hashtagsName = getHashtagsArray(element);
-  const newArray = [];
 
-  hashtagsName.forEach((hashtag) => {
-    if(regexp.test(hashtag) === true) {
-      newArray.push(hashtag);
-    }
-  });
-
-  return hashtagsName.length === newArray.length;
+  return hashtagsName.every((hashtag) => REGEXP.test(hashtag));
 };
 
 const getHashtagsCount = (element) => {
@@ -80,26 +80,20 @@ const getHashtagsCount = (element) => {
 
 const getHashtagsDuplicate = (element) => {
   const hashtagsArray = getHashtagsArray(element);
-  const newArray = [];
-  for (let i = 0; i < hashtagsArray.length; i++) {
-    if(!newArray.includes(hashtagsArray[i])){
-      newArray.push(hashtagsArray[i]);
-    }
-  }
-  if(newArray.length === hashtagsArray.length) {
-    return newArray;
-  }
+  return new Set(hashtagsArray).size === hashtagsArray.length;
 };
 
 const getCommentLength = (element) => element.length < COMMENT_LENGTH;
 
 
-pristine.addValidator(uploadHashtag, getHashtagsName, 'введён невалидный хэштег');
-pristine.addValidator(uploadHashtag, getHashtagsCount, 'превышено количество хэштегов');
-pristine.addValidator(uploadHashtag, getHashtagsDuplicate, 'хэштеги повторяются');
-pristine.addValidator(uploadComment, getCommentLength, 'длина комментария больше 140 символов');
+pristine.addValidator(uploadHashtag, getHashtagsName, errorMessage.invalidName);
+pristine.addValidator(uploadHashtag, getHashtagsCount, errorMessage.hashtagsLimit);
+pristine.addValidator(uploadHashtag, getHashtagsDuplicate, errorMessage.hashtagsRepeat);
+pristine.addValidator(uploadComment, getCommentLength, errorMessage.commentsLength);
 
 formUpload.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  pristine.validate();
+  if(pristine.validate()){
+    formUpload.submit();
+  }
 });
