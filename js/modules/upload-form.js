@@ -5,14 +5,14 @@ const COMMENT_LENGTH = 140;
 const REGEXP = /^#[a-zф-яё0-9]{1,19}$/i;
 const ZOOM_STEP = 0.25;
 
+let zoomValue = 1;
+
 const errorMessage = {
   invalidName: 'введён невалидный хэштег',
   hashtagsLimit: 'превышено количество хэштегов',
   hashtagsRepeat: 'хэштеги повторяются',
   commentsLength: 'длина комментария больше 140 символов'
 };
-
-const zoomValue = 1;
 
 const formUpload = document.querySelector('.img-upload__form');
 const imageUploadInput = formUpload.querySelector('.img-upload__input');
@@ -69,7 +69,6 @@ const onZoomOut = () => {
   if(zoomValue > ZOOM_STEP){
     zoomValue -= ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
-    console.log(zoomValue);
     scaleControl.value = `${zoomValue * 100}%`;
   }
 };
@@ -78,7 +77,6 @@ const onZoomIn = () => {
   if(zoomValue < 1){
     zoomValue += ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
-    console.log(zoomValue);
     scaleControl.value = `${zoomValue * 100}%`;
   }
 };
