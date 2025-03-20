@@ -14,12 +14,12 @@ const errorMessage = {
   commentsLength: 'длина комментария больше 140 символов'
 };
 
-const effectKeys = {
-  chrome: 'grayscale',
-  sepia: 'sepia',
-  marvin: 'invert',
-  phobos: 'blur',
-  heat: 'brightness',
+const EffectDictionary = {
+  chrome: {min: 0, max: 1, start: 1, step: 0.1, name: 'grayscale',unit: ''},
+  sepia: {min: 0, max: 1, start: 1, step: 0.1, name: 'sepia',unit: ''},
+  marvin: {min: 0, max: 100, start: 100, step: 1, name: 'invert', unit: '%'},
+  phobos: {min: 0, max: 3, start: 3, step: 0.1, name: 'blur', unit: 'px'},
+  heat:  {min: 1,max: 3,start: 3,step: 0.1, name: 'brightness',unit: ''},
 };
 
 const formUpload = document.querySelector('.img-upload__form');
@@ -57,16 +57,41 @@ noUiSlider.create(slider, {
   connect: 'lower',
   format: {
     to: function (value) {
-      if (Number.isInteger(value)) {
-        return value.toFixed(0);
-      }
-      return value.toFixed(1);
+      return +value;
     },
     from: function (value) {
-      return parseFloat(value);
+      return value;
     },
   },
 });
+
+
+const onUpdateEffect = (evt) => {
+  const effect = evt.target.value;
+
+  if(effect in EffectDictionary) {
+
+    slider.noUiSlider.updateOptions({
+      range: {
+        min: EffectDictionary[effect].min,
+        max: EffectDictionary[effect].max
+      },
+      step: EffectDictionary[effect].step,
+      start: EffectDictionary[effect].start
+    });
+  }
+
+  slider.noUiSlider.on('update', () => {
+    effectValue.value = slider.noUiSlider.get();
+    if(effect in EffectDictionary) {
+      effectLevel.classList.remove('hidden');
+      imgUploadPrewiew.style.filter = `${EffectDictionary[effect].name}(${effectValue.value}${EffectDictionary[effect].unit})`;
+    } else if(effect === 'none'){
+      imgUploadPrewiew.style.filter = 'none';
+      effectLevel.classList.add('hidden');
+    }
+  });
+};
 
 const onDocumentKeyDown = (evt) => {
   if(isEscapeKey(evt)){
@@ -98,6 +123,8 @@ function onCloseUploadWindow() {
   document.removeEventListener('keydown', onDocumentKeyDown);
   uploadHashtag.removeEventListener('focus', onCancleKeyDown);
   uploadComment.removeEventListener('focus', onCancleKeyDown);
+  effectList.removeEventListener('change', onUpdateEffect);
+  slider.noUiSlider.destroy();
 }
 
 
@@ -160,67 +187,7 @@ formUpload.addEventListener('submit', (evt) => {
 scaleControlSmaller.addEventListener('click', onZoomOut);
 scaleControlBigger.addEventListener('click', onZoomIn);
 
-effectList.addEventListener('change', (evt) => {
-  effectLevel.classList.remove('hidden');
-  const effect = evt.target.value;
 
-  slider.noUiSlider.on('update', () => {
-    effectValue.value = slider.noUiSlider.get();
-    console.log(effectKeys.value);
-  });
+effectList.addEventListener('change', onUpdateEffect);
 
-  if(effect === 'none'){
-    effectLevel.classList.add('hidden');
-    imgUploadPrewiew.style.filter = 'none';
-  }else if(effect === 'chrome') {
-    slider.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 1
-      },
-      start: 1,
-      step: 0.1
-    });
-    imgUploadPrewiew.style.filter = `${effectKeys.chrome}(${effectValue.value})`;
-  } else if(effect === 'sepia') {
-    slider.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 1
-      },
-      start: 1,
-      step: 0.1
-    });
-    imgUploadPrewiew.style.filter = `${effectKeys.sepia}(${effectValue.value})`;
-  } else if(effect === 'marvin'){
-    slider.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 100,
-      },
-      start: 100,
-      step: 1
-    });
-    imgUploadPrewiew.style.filter = `${effectKeys.marvin}(${effectValue.value}%)`;
-  } else if(effect === 'phobos'){
-    slider.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 3,
-      },
-      start: 3,
-      step: 0.1,
-    });
-    imgUploadPrewiew.style.filter = `${effectKeys.phobos}(${effectValue.value}px)`;
-  } else if(effect === 'heat'){
-    slider.noUiSlider.updateOptions({
-      range: {
-        min: 1,
-        max: 3,
-      },
-      start: 3,
-      step: 0.1,
-    });
-    imgUploadPrewiew.style.filter = `${effectKeys.heat}(${effectValue.value})`;
-  }
-});
+
