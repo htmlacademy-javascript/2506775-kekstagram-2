@@ -79,6 +79,9 @@ const onUpdateEffect = (evt) => {
       step: EffectDictionary[effect].step,
       start: EffectDictionary[effect].start
     });
+  } else {
+    imgUploadPrewiew.style.filter = 'none';
+    effectLevel.classList.add('hidden');
   }
 };
 
@@ -87,9 +90,6 @@ slider.noUiSlider.on('update', () => {
   if(effect in EffectDictionary) {
     effectLevel.classList.remove('hidden');
     imgUploadPrewiew.style.filter = `${EffectDictionary[effect].name}(${effectValue.value}${EffectDictionary[effect].unit})`;
-  } else if(effect === 'none'){
-    imgUploadPrewiew.style.filter = 'none';
-    effectLevel.classList.add('hidden');
   }
 });
 
