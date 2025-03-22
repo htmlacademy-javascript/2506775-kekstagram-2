@@ -4,6 +4,7 @@ const HASHTAGS_COUNT = 5;
 const COMMENT_LENGTH = 140;
 const REGEXP = /^#[a-zф-яё0-9]{1,19}$/i;
 const ZOOM_STEP = 0.25;
+let effect;
 
 let zoomValue = 1;
 
@@ -35,7 +36,7 @@ const scaleControl = formUpload.querySelector('.scale__control--value');
 const slider = formUpload.querySelector('.effect-level__slider');
 const effectValue = formUpload.querySelector('.effect-level__value');
 const effectLevel = formUpload.querySelector('.img-upload__effect-level');
-const effectList = formUpload.querySelector('.effects__list');
+const onEffectList = formUpload.querySelector('.effects__list');
 
 effectLevel.classList.add('hidden');
 
@@ -65,9 +66,8 @@ noUiSlider.create(slider, {
   },
 });
 
-
 const onUpdateEffect = (evt) => {
-  const effect = evt.target.value;
+  effect = evt.target.value;
 
   if(effect in EffectDictionary) {
 
@@ -80,18 +80,18 @@ const onUpdateEffect = (evt) => {
       start: EffectDictionary[effect].start
     });
   }
-
-  slider.noUiSlider.on('update', () => {
-    effectValue.value = slider.noUiSlider.get();
-    if(effect in EffectDictionary) {
-      effectLevel.classList.remove('hidden');
-      imgUploadPrewiew.style.filter = `${EffectDictionary[effect].name}(${effectValue.value}${EffectDictionary[effect].unit})`;
-    } else if(effect === 'none'){
-      imgUploadPrewiew.style.filter = 'none';
-      effectLevel.classList.add('hidden');
-    }
-  });
 };
+
+slider.noUiSlider.on('update', () => {
+  effectValue.value = slider.noUiSlider.get();
+  if(effect in EffectDictionary) {
+    effectLevel.classList.remove('hidden');
+    imgUploadPrewiew.style.filter = `${EffectDictionary[effect].name}(${effectValue.value}${EffectDictionary[effect].unit})`;
+  } else if(effect === 'none'){
+    imgUploadPrewiew.style.filter = 'none';
+    effectLevel.classList.add('hidden');
+  }
+});
 
 const onDocumentKeyDown = (evt) => {
   if(isEscapeKey(evt)){
@@ -123,7 +123,7 @@ function onCloseUploadWindow() {
   document.removeEventListener('keydown', onDocumentKeyDown);
   onUploadHashtag.removeEventListener('focus', cancelKeyDown);
   onUploadComment.removeEventListener('focus', cancelKeyDown);
-  effectList.removeEventListener('change', onUpdateEffect);
+  onEffectList.removeEventListener('change', onUpdateEffect);
   slider.noUiSlider.destroy();
 }
 
@@ -188,6 +188,6 @@ scaleControlSmaller.addEventListener('click', onZoomOut);
 scaleControlBigger.addEventListener('click', onZoomIn);
 
 
-effectList.addEventListener('change', onUpdateEffect);
+onEffectList.addEventListener('change', onUpdateEffect);
 
 
