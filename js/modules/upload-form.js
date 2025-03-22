@@ -26,8 +26,8 @@ const formUpload = document.querySelector('.img-upload__form');
 const imageUploadInput = formUpload.querySelector('.img-upload__input');
 const imageOverlay = formUpload.querySelector('.img-upload__overlay');
 const imageUploadCancel = formUpload.querySelector('.img-upload__cancel');
-const uploadHashtag = formUpload.querySelector('.text__hashtags');
-const uploadComment = formUpload.querySelector('.text__description');
+const onUploadHashtag = formUpload.querySelector('.text__hashtags');
+const onUploadComment = formUpload.querySelector('.text__description');
 const imgUploadPrewiew = formUpload.querySelector('.img-upload__preview img');
 const scaleControlSmaller = formUpload.querySelector('.scale__control--smaller');
 const scaleControlBigger = formUpload.querySelector('.scale__control--bigger');
@@ -100,7 +100,7 @@ const onDocumentKeyDown = (evt) => {
   }
 };
 
-const onCancleKeyDown = (evt) => {
+const cancelKeyDown = (evt) => {
   if(isEscapeKey(evt)){
     evt.stopPropagation();
   }
@@ -109,20 +109,20 @@ const onCancleKeyDown = (evt) => {
 const onOpenUploadWindow = () => {
   imageOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  uploadHashtag.addEventListener('keydown', onCancleKeyDown);
-  uploadComment.addEventListener('keydown', onCancleKeyDown);
+  onUploadHashtag.addEventListener('keydown', cancelKeyDown);
+  onUploadComment.addEventListener('keydown', cancelKeyDown);
   document.addEventListener('keydown', onDocumentKeyDown);
 };
 
 function onCloseUploadWindow() {
   imageUploadInput.value = '';
-  uploadHashtag.value = '';
-  uploadComment.value = '';
+  onUploadHashtag.value = '';
+  onUploadComment.value = '';
   imageOverlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeyDown);
-  uploadHashtag.removeEventListener('focus', onCancleKeyDown);
-  uploadComment.removeEventListener('focus', onCancleKeyDown);
+  onUploadHashtag.removeEventListener('focus', cancelKeyDown);
+  onUploadComment.removeEventListener('focus', cancelKeyDown);
   effectList.removeEventListener('change', onUpdateEffect);
   slider.noUiSlider.destroy();
 }
@@ -172,10 +172,10 @@ const getHashtagsDuplicate = (element) => {
 const getCommentLength = (element) => element.length < COMMENT_LENGTH;
 
 
-pristine.addValidator(uploadHashtag, getHashtagsName, errorMessage.invalidName);
-pristine.addValidator(uploadHashtag, getHashtagsCount, errorMessage.hashtagsLimit);
-pristine.addValidator(uploadHashtag, getHashtagsDuplicate, errorMessage.hashtagsRepeat);
-pristine.addValidator(uploadComment, getCommentLength, errorMessage.commentsLength);
+pristine.addValidator(onUploadHashtag, getHashtagsName, errorMessage.invalidName);
+pristine.addValidator(onUploadHashtag, getHashtagsCount, errorMessage.hashtagsLimit);
+pristine.addValidator(onUploadHashtag, getHashtagsDuplicate, errorMessage.hashtagsRepeat);
+pristine.addValidator(onUploadComment, getCommentLength, errorMessage.commentsLength);
 
 formUpload.addEventListener('submit', (evt) => {
   evt.preventDefault();
