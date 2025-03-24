@@ -4,6 +4,8 @@ const HASHTAGS_COUNT = 5;
 const COMMENT_LENGTH = 140;
 const REGEXP = /^#[a-zф-яё0-9]{1,19}$/i;
 const ZOOM_STEP = 0.25;
+const MIN_ZOOM_VALUE = 0.25;
+const MAX_ZOOM_VALUE = 1;
 let effect;
 
 let zoomValue = 1;
@@ -30,13 +32,13 @@ const imageUploadCancel = formUpload.querySelector('.img-upload__cancel');
 const onUploadHashtag = formUpload.querySelector('.text__hashtags');
 const onUploadComment = formUpload.querySelector('.text__description');
 const imgUploadPrewiew = formUpload.querySelector('.img-upload__preview img');
-const scaleControlSmaller = formUpload.querySelector('.scale__control--smaller');
-const scaleControlBigger = formUpload.querySelector('.scale__control--bigger');
+const onScaleControlSmaller = formUpload.querySelector('.scale__control--smaller');
+const onScaleControlBigger = formUpload.querySelector('.scale__control--bigger');
 const scaleControl = formUpload.querySelector('.scale__control--value');
 const slider = formUpload.querySelector('.effect-level__slider');
 const effectValue = formUpload.querySelector('.effect-level__value');
 const effectLevel = formUpload.querySelector('.img-upload__effect-level');
-const onEffectList = formUpload.querySelector('.effects__list');
+const effectList = formUpload.querySelector('.effects__list');
 
 effectLevel.classList.add('hidden');
 
@@ -66,7 +68,7 @@ noUiSlider.create(slider, {
   },
 });
 
-const onUpdateEffect = (evt) => {
+const onEffectListChange = (evt) => {
   effect = evt.target.value;
 
   if(effect in EffectDictionary) {
@@ -123,21 +125,21 @@ function onCloseUploadWindow() {
   document.removeEventListener('keydown', onDocumentKeyDown);
   onUploadHashtag.removeEventListener('focus', cancelKeyDown);
   onUploadComment.removeEventListener('focus', cancelKeyDown);
-  onEffectList.removeEventListener('change', onUpdateEffect);
+  effectList.removeEventListener('change', onEffectListChange);
   slider.noUiSlider.destroy();
 }
 
 
-const onZoomOut = () => {
-  if(zoomValue > ZOOM_STEP){
+const zoomOut = () => {
+  if(zoomValue > MIN_ZOOM_VALUE){
     zoomValue -= ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
     scaleControl.value = `${zoomValue * 100}%`;
   }
 };
 
-const onZoomIn = () => {
-  if(zoomValue < 1){
+const zoomIn = () => {
+  if(zoomValue < MAX_ZOOM_VALUE){
     zoomValue += ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
     scaleControl.value = `${zoomValue * 100}%`;
@@ -184,10 +186,10 @@ formUpload.addEventListener('submit', (evt) => {
   }
 });
 
-scaleControlSmaller.addEventListener('click', onZoomOut);
-scaleControlBigger.addEventListener('click', onZoomIn);
+onScaleControlSmaller.addEventListener('click', zoomOut);
+onScaleControlBigger.addEventListener('click', zoomIn);
 
 
-onEffectList.addEventListener('change', onUpdateEffect);
+effectList.addEventListener('change', onEffectListChange);
 
 
