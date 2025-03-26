@@ -32,8 +32,8 @@ const imageUploadCancel = formUpload.querySelector('.img-upload__cancel');
 const onUploadHashtag = formUpload.querySelector('.text__hashtags');
 const onUploadComment = formUpload.querySelector('.text__description');
 const imgUploadPrewiew = formUpload.querySelector('.img-upload__preview img');
-const onScaleControlSmaller = formUpload.querySelector('.scale__control--smaller');
-const onScaleControlBigger = formUpload.querySelector('.scale__control--bigger');
+const scaleControlSmaller = formUpload.querySelector('.scale__control--smaller');
+const scaleControlBigger = formUpload.querySelector('.scale__control--bigger');
 const scaleControl = formUpload.querySelector('.scale__control--value');
 const slider = formUpload.querySelector('.effect-level__slider');
 const effectValue = formUpload.querySelector('.effect-level__value');
@@ -130,7 +130,7 @@ function onCloseUploadWindow() {
 }
 
 
-const zoomOut = () => {
+const onScaleControlSmallerClick = () => {
   if(zoomValue > MIN_ZOOM_VALUE){
     zoomValue -= ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
@@ -138,7 +138,7 @@ const zoomOut = () => {
   }
 };
 
-const zoomIn = () => {
+const onScaleControlBiggerClick = () => {
   if(zoomValue < MAX_ZOOM_VALUE){
     zoomValue += ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
@@ -186,8 +186,8 @@ formUpload.addEventListener('submit', (evt) => {
   }
 });
 
-onScaleControlSmaller.addEventListener('click', zoomOut);
-onScaleControlBigger.addEventListener('click', zoomIn);
+scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
+scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
 
 
 effectList.addEventListener('change', onEffectListChange);
