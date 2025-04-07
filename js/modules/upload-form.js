@@ -1,4 +1,6 @@
 import { isEscapeKey } from './util.js';
+import { showAlert, showSuccess } from './api.js';
+import { sendData } from './api.js';
 
 const HASHTAGS_COUNT = 5;
 const COMMENT_LENGTH = 140;
@@ -25,6 +27,11 @@ const EffectDictionary = {
   heat:  {min: 1,max: 3,start: 3,step: 0.1, name: 'brightness',unit: ''},
 };
 
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикую...'
+};
+
 const formUpload = document.querySelector('.img-upload__form');
 const imageUploadInput = formUpload.querySelector('.img-upload__input');
 const imageOverlay = formUpload.querySelector('.img-upload__overlay');
@@ -39,8 +46,19 @@ const slider = formUpload.querySelector('.effect-level__slider');
 const effectValue = formUpload.querySelector('.effect-level__value');
 const effectLevel = formUpload.querySelector('.img-upload__effect-level');
 const effectList = formUpload.querySelector('.effects__list');
+const submitButton = formUpload.querySelector('.img-upload__submit');
 
 effectLevel.classList.add('hidden');
+
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
+};
+
+const unBlockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
+};
 
 
 const pristine = new Pristine(formUpload, {
@@ -179,17 +197,27 @@ pristine.addValidator(onUploadHashtag, getHashtagsCount, errorMessage.hashtagsLi
 pristine.addValidator(onUploadHashtag, getHashtagsDuplicate, errorMessage.hashtagsRepeat);
 pristine.addValidator(onUploadComment, getCommentLength, errorMessage.commentsLength);
 
-formUpload.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  if(pristine.validate()){
-    formUpload.submit();
-  }
-});
+const setUserFormSubmit = (onSuccess) => {
+  formUpload.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if(isValid){
+      blockSubmitButton();
+      showSuccess();
+      sendData(new FormData(evt.target))
+        .then(onSuccess)
+        .catch(() => {
+          showAlert();
+        })
+        .finally(unBlockSubmitButton);
+    }
+  });
+};
 
 scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
 scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
-
-
 effectList.addEventListener('change', onEffectListChange);
 
 
+export {setUserFormSubmit, onCloseUploadWindow};

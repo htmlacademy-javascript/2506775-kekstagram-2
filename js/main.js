@@ -1,7 +1,15 @@
-import { photoslist } from './modules/photo-template.js';
 import { displaysPictures } from './modules/photo-template.js';
-import './modules/upload-form.js';
+import { setUserFormSubmit, onCloseUploadWindow} from './modules/upload-form.js';
+import { getData } from './modules/api.js';
 
-displaysPictures(photoslist);
+
+// displaysPictures(photoslist);
+
+getData()
+  .then((photos) => {
+    displaysPictures(photos);
+  });
+
+setUserFormSubmit(onCloseUploadWindow);
 
 
