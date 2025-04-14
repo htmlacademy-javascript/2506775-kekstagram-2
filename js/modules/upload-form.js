@@ -1,6 +1,7 @@
 import { isEscapeKey, showAlert,showSuccess } from './util.js';
 import { sendData } from './api.js';
 import { initSlider, destroySlider} from './slider.js';
+// import { uploadPhotoFile } from './load-photo.js';
 
 const HASHTAGS_COUNT = 5;
 const COMMENT_LENGTH = 140;
@@ -70,6 +71,7 @@ const cancelKeyDown = (evt) => {
 };
 
 const onOpenUploadWindow = () => {
+  // uploadPhotoFile();
   imageOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
   onUploadHashtag.addEventListener('keydown', cancelKeyDown);
