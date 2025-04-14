@@ -35,7 +35,7 @@ const renderGallery = debounce(reloadGallery, RENDER_TIME);
 
 const randomPhotos = () => Math.random() - 0.5;
 
-const discussedPhotos = (commentsA, commentsB) => commentsB.comments.length - commentsA.comments.length;
+const discussedPhotos = (first, second) => second.comments.length - first.comments.length;
 
 const Filters = {
   DEFAULT: {buttonName: filterButtonDefault, arrayModifier: false, },
