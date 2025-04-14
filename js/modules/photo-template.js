@@ -1,10 +1,9 @@
 import { openWindow } from './full-image.js';
 // import { getPhotos } from './photo-desc.js';
 
-const container = document.querySelector('.pictures');
+const picturesContainer = document.querySelector('.pictures');
 const templateFragment = document.querySelector('#picture').content;
 const template = templateFragment.querySelector('.picture');
-const imageFilters = document.querySelector('.img-filters');
 
 let photoslist = [];
 
@@ -36,11 +35,10 @@ const displaysPictures = (arrayOfPictures) => {
     fragment.append(miniature);
   }
 
-  container.append(fragment);
-  imageFilters.classList.remove('img-filters--inactive');
+  picturesContainer.append(fragment);
 };
 
-container.addEventListener('click', (evt) => {
+picturesContainer.addEventListener('click', (evt) => {
   const currentPicture = evt.target.closest('.picture');
 
   if(currentPicture){
@@ -50,4 +48,4 @@ container.addEventListener('click', (evt) => {
   }
 });
 
-export {displaysPictures, photoslist};
+export {displaysPictures};
