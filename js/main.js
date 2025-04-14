@@ -1,6 +1,7 @@
 import { displaysPictures } from './modules/photo-template.js';
-import { setUserFormSubmit, onCloseUploadWindow} from './modules/upload-form.js';
+import { setUserFormSubmit, closeUploadWindow} from './modules/upload-form.js';
 import { getData } from './modules/api.js';
+import { showAlert } from './modules/util.js';
 
 
 // displaysPictures(photoslist);
@@ -8,8 +9,9 @@ import { getData } from './modules/api.js';
 getData()
   .then((photos) => {
     displaysPictures(photos);
+  })
+  .catch(() => {
+    showAlert();
   });
 
-setUserFormSubmit(onCloseUploadWindow);
-
-
+setUserFormSubmit(closeUploadWindow);

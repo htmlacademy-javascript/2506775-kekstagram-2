@@ -1,11 +1,12 @@
 import { openWindow } from './full-image.js';
-import { getPhotos } from './photo-desc.js';
+// import { getPhotos } from './photo-desc.js';
 
 const container = document.querySelector('.pictures');
 const templateFragment = document.querySelector('#picture').content;
 const template = templateFragment.querySelector('.picture');
+const imageFilters = document.querySelector('.img-filters');
 
-const photoslist = getPhotos();
+let photoslist = [];
 
 const getPicture = function(item){
   const element = template.cloneNode(true);
@@ -27,6 +28,7 @@ const getPicture = function(item){
 
 
 const displaysPictures = (arrayOfPictures) => {
+  photoslist = arrayOfPictures;
   const fragment = document.createDocumentFragment();
 
   for(let i = 0; i < arrayOfPictures.length; i++) {
@@ -35,6 +37,7 @@ const displaysPictures = (arrayOfPictures) => {
   }
 
   container.append(fragment);
+  imageFilters.classList.remove('img-filters--inactive');
 };
 
 container.addEventListener('click', (evt) => {

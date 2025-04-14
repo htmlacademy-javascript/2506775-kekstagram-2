@@ -59,7 +59,7 @@ const pristine = new Pristine(formUpload, {
 const onDocumentKeyDown = (evt) => {
   if(isEscapeKey(evt)){
     evt.preventDefault();
-    onCloseUploadWindow();
+    closeUploadWindow();
   }
 };
 
@@ -78,7 +78,7 @@ const onOpenUploadWindow = () => {
   initSlider();
 };
 
-function onCloseUploadWindow() {
+function closeUploadWindow() {
   imageUploadInput.value = '';
   onUploadHashtag.value = '';
   onUploadComment.value = '';
@@ -89,6 +89,10 @@ function onCloseUploadWindow() {
   onUploadComment.removeEventListener('focus', cancelKeyDown);
   destroySlider();
 }
+
+const onCloseUploadWindow = () => {
+  closeUploadWindow();
+};
 
 
 const onScaleControlSmallerClick = () => {
@@ -161,5 +165,4 @@ const setUserFormSubmit = (onSuccess) => {
 scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
 scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
 
-
-export {setUserFormSubmit, onCloseUploadWindow};
+export {setUserFormSubmit, closeUploadWindow};

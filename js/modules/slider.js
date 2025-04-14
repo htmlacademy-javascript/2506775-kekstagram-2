@@ -57,7 +57,8 @@ const onEffectListChange = (evt) => {
 
 const initSlider = () => {
   effectNone.checked = true;
-
+  effect = 'none';
+  imgUploadPrewiew.style.filter = 'none';
 
   createSlider();
 
