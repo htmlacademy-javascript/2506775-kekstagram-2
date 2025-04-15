@@ -14,13 +14,44 @@ const keysToProcess = {
 
 const isEscapeKey = (evt) => evt.key === keysToProcess.Escape;
 
-const showSuccess = () => {
-  const successMessage = templateSuccess.cloneNode(true);
+let successMessage;
+
+const removeMessage = () => {
+  successMessage.remove();
+  document.removeEventListener('keydown', onDocumentKeydown);
+  document.removeEventListener('click', onDocumentClick);
+};
+
+const onButtonClick = () => {
+  removeMessage();
+};
+
+function onDocumentKeydown (evt) {
+  if (isEscapeKey(evt)) {
+    removeMessage();
+  }
+}
+
+function onDocumentClick (evt) {
+  const messageBox = successMessage.querySelector('div');
+  const isClickOnMessage = evt.composedPath().includes(messageBox);
+  if (!isClickOnMessage) {
+    removeMessage();
+  }
+}
+
+const showSuccess = (message) => {
+  successMessage = message.cloneNode(true);
+  const button = successMessage.querySelector('button');
   document.body.append(successMessage);
+  button.addEventListener('click', onButtonClick);
+  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('click', onDocumentClick);
   setTimeout(() => {
     successMessage.remove();
   }, ALERT_SHOW_TIME);
 };
+
 const showAlert = () => {
   const errorMessage = templateError.cloneNode(true);
   document.body.append(errorMessage);
@@ -29,6 +60,9 @@ const showAlert = () => {
   }, ALERT_SHOW_TIME);
 };
 
+const downloadSuccessMessage = () => {
+  showSuccess(templateSuccess);
+};
 const debounce = (callback, timeoutDelay) => {
   let timeoutId;
   return (...rest) => {
@@ -37,4 +71,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export {isEscapeKey, showSuccess, showAlert, debounce};
+export {isEscapeKey, downloadSuccessMessage, showAlert, debounce};

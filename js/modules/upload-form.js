@@ -1,4 +1,4 @@
-import { isEscapeKey, showAlert,showSuccess } from './util.js';
+import { isEscapeKey, showAlert,downloadSuccessMessage} from './util.js';
 import { sendData } from './api.js';
 import { initSlider, destroySlider} from './slider.js';
 import { uploadPhotoFile } from './load-photo.js';
@@ -14,10 +14,10 @@ const MAX_ZOOM_VALUE = 1;
 let zoomValue = 1;
 
 const errorMessage = {
-  invalidName: 'введён невалидный хэштег',
-  hashtagsLimit: 'превышено количество хэштегов',
-  hashtagsRepeat: 'хэштеги повторяются',
-  commentsLength: 'длина комментария больше 140 символов'
+  invalidName: 'Введён невалидный хэштег',
+  hashtagsLimit: 'Превышено количество хэштегов',
+  hashtagsRepeat: 'Хэштеги повторяются',
+  commentsLength: 'Длина комментария больше 140 символов'
 };
 
 
@@ -56,6 +56,9 @@ const pristine = new Pristine(formUpload, {
   errorTextClass: 'img-upload__field-wrapper--error'
 });
 
+const resetValidation = () => {
+  pristine.reset();
+};
 
 const onDocumentKeyDown = (evt) => {
   if(isEscapeKey(evt)){
@@ -69,33 +72,6 @@ const cancelKeyDown = (evt) => {
     evt.stopPropagation();
   }
 };
-
-const onOpenUploadWindow = () => {
-  uploadPhotoFile();
-  imageOverlay.classList.remove('hidden');
-  document.body.classList.add('modal-open');
-  onUploadHashtag.addEventListener('keydown', cancelKeyDown);
-  onUploadComment.addEventListener('keydown', cancelKeyDown);
-  document.addEventListener('keydown', onDocumentKeyDown);
-  initSlider();
-};
-
-function closeUploadWindow() {
-  imageUploadInput.value = '';
-  onUploadHashtag.value = '';
-  onUploadComment.value = '';
-  imageOverlay.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeyDown);
-  onUploadHashtag.removeEventListener('focus', cancelKeyDown);
-  onUploadComment.removeEventListener('focus', cancelKeyDown);
-  destroySlider();
-}
-
-const onCloseUploadWindow = () => {
-  closeUploadWindow();
-};
-
 
 const onScaleControlSmallerClick = () => {
   if(zoomValue > MIN_ZOOM_VALUE){
@@ -111,6 +87,40 @@ const onScaleControlBiggerClick = () => {
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
     scaleControl.value = `${zoomValue * 100}%`;
   }
+};
+
+const onOpenUploadWindow = () => {
+  uploadPhotoFile();
+  zoomValue = 1;
+  scaleControl.value = `${zoomValue * 100}%`;
+  imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
+  imageOverlay.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  onUploadHashtag.addEventListener('keydown', cancelKeyDown);
+  onUploadComment.addEventListener('keydown', cancelKeyDown);
+  document.addEventListener('keydown', onDocumentKeyDown);
+  scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
+  scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
+  initSlider();
+};
+
+function closeUploadWindow() {
+  imageUploadInput.value = '';
+  onUploadHashtag.value = '';
+  onUploadComment.value = '';
+  imageOverlay.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeyDown);
+  onUploadHashtag.removeEventListener('focus', cancelKeyDown);
+  onUploadComment.removeEventListener('focus', cancelKeyDown);
+  scaleControlSmaller.removeEventListener('click', onScaleControlSmallerClick);
+  scaleControlBigger.removeEventListener('click', onScaleControlBiggerClick);
+  destroySlider();
+  resetValidation();
+}
+
+const onCloseUploadWindow = () => {
+  closeUploadWindow();
 };
 
 imageUploadInput.addEventListener('change', onOpenUploadWindow);
@@ -146,16 +156,18 @@ pristine.addValidator(onUploadHashtag, getHashtagsCount, errorMessage.hashtagsLi
 pristine.addValidator(onUploadHashtag, getHashtagsDuplicate, errorMessage.hashtagsRepeat);
 pristine.addValidator(onUploadComment, getCommentLength, errorMessage.commentsLength);
 
-const setUserFormSubmit = (onSuccess) => {
+const setUserFormSubmit = () => {
   formUpload.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     const isValid = pristine.validate();
     if(isValid){
       blockSubmitButton();
-      showSuccess();
       sendData(new FormData(evt.target))
-        .then(onSuccess)
+        .then(() => {
+          closeUploadWindow();
+          downloadSuccessMessage();
+        })
         .catch(() => {
           showAlert();
         })
@@ -163,8 +175,5 @@ const setUserFormSubmit = (onSuccess) => {
     }
   });
 };
-
-scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
-scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
 
 export {setUserFormSubmit, closeUploadWindow};
