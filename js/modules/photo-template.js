@@ -19,7 +19,7 @@ const getPicture = function(item){
   likes.textContent = item.likes;
 
   const comments = element.querySelector('.picture__comments');
-  comments.innerHTML = item.comments.length;
+  comments.textContent = item.comments.length;
 
   return element;
 };

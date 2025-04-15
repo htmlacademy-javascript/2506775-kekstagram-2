@@ -4,8 +4,6 @@ import { getRandomInteger, getId} from './util.js';
 const AVATAR_COUNT_FROM = 1;
 const AVATAR_COUNT_TO = 6;
 
-const getCommentId = getId();
-
 const NAMES = ['София', 'Артем', 'Ева', 'Амина', 'Давид', 'Максим', 'Дарина', 'Алия', 'Амелия', 'Дамир', 'Арслан'];
 const MESSAGES = [
   'Всё отлично!',
@@ -16,6 +14,7 @@ const MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
+const getCommentId = getId();
 
 const getComments = () => {
   const comment = {

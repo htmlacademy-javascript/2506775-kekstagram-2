@@ -26,48 +26,48 @@ const clearGallery = () => {
   }
 };
 
-const reloadGallery = (array) => {
+const reloadGallery = (arrays) => {
   clearGallery();
-  displaysPictures(array);
+  displaysPictures(arrays);
 };
 
 const renderGallery = debounce(reloadGallery, RENDER_TIME);
 
-const randomPhotos = () => Math.random() - 0.5;
+const getRandomPhotos = () => Math.random() - 0.5;
 
-const discussedPhotos = (first, second) => second.comments.length - first.comments.length;
+const getDiscussedPhotos = (first, second) => second.comments.length - first.comments.length;
 
 const Filters = {
-  DEFAULT: {buttonName: filterButtonDefault, arrayModifier: false, },
-  RANDOM: {buttonName: filterButtonRandom, arrayModifier: true, sortingFunction: randomPhotos, lengthLimit: MAX_PHOTOS},
-  DISCUSSED: {buttonName: filterButtonDiscussed, arrayModifier: true, sortingFunction: discussedPhotos},
+  DEFAULT: {buttonName: filterButtonDefault, arrayModifiers: false, },
+  RANDOM: {buttonName: filterButtonRandom, arrayModifiers: true, sortingFunction: getRandomPhotos, lengthLimit: MAX_PHOTOS},
+  DISCUSSED: {buttonName: filterButtonDiscussed, arrayModifiers: true, sortingFunction: getDiscussedPhotos},
 };
 
-const modifyArray = (array, {arrayModifier, sortingFunction = () => 0, lengthLimit = array.length}) => {
-  if (arrayModifier) {
-    return array.slice().sort(sortingFunction).slice(0, lengthLimit);
+const modifyArray = (arrays, {arrayModifiers, sortingFunction = () => 0, lengthLimit = arrays.length}) => {
+  if (arrayModifiers) {
+    return arrays.slice().sort(sortingFunction).slice(0, lengthLimit);
   }
-  return array;
+  return arrays;
 };
 
-const applyFilter = (filter, array) => {
+const applyFilter = (filter, arrays) => {
   removeActiveClass();
   filter.buttonName.classList.add('img-filters__button--active');
-  const modifiedArray = modifyArray(array, filter);
+  const modifiedArray = modifyArray(arrays, filter);
   renderGallery(modifiedArray);
 };
 
-const initFilterSection = (array) => {
+const getInitFilterSection = (arrays) => {
   if (filters) {
-    filterButtonDefault.addEventListener('click', () => applyFilter(Filters.DEFAULT, array));
-    filterButtonRandom.addEventListener('click', () => applyFilter(Filters.RANDOM, array));
-    filterButtonDiscussed.addEventListener('click', () => applyFilter(Filters.DISCUSSED, array));
+    filterButtonDefault.addEventListener('click', () => applyFilter(Filters.DEFAULT, arrays));
+    filterButtonRandom.addEventListener('click', () => applyFilter(Filters.RANDOM, arrays));
+    filterButtonDiscussed.addEventListener('click', () => applyFilter(Filters.DISCUSSED, arrays));
   }
 };
 
-const loadGallery = (array) => {
-  displaysPictures(array);
-  initFilterSection(array);
+const loadGallery = (arrays) => {
+  displaysPictures(arrays);
+  getInitFilterSection(arrays);
   imageFilters.classList.remove('img-filters--inactive');
 };
 
