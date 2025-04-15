@@ -36,7 +36,7 @@ const createSlider = () =>{
   });
 };
 
-const onEffectListChange = (evt) => {
+const onChangeEffectList = (evt) => {
   effect = evt.target.value;
 
   if(effect in EffectDictionary) {
@@ -55,14 +55,14 @@ const onEffectListChange = (evt) => {
   }
 };
 
-const initSlider = () => {
+const getInitSlider = () => {
   effectNone.checked = true;
   effect = 'none';
   imgUploadPrewiew.style.filter = 'none';
 
   createSlider();
 
-  effectList.addEventListener('change', onEffectListChange);
+  effectList.addEventListener('change', onChangeEffectList);
   effectLevel.classList.add('hidden');
 
 
@@ -77,7 +77,7 @@ const initSlider = () => {
 
 const destroySlider = () => {
   slider.noUiSlider.destroy();
-  effectList.removeEventListener('change', onEffectListChange);
+  effectList.removeEventListener('change', onChangeEffectList);
 };
 
-export { initSlider, destroySlider };
+export { getInitSlider, destroySlider };
