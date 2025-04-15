@@ -1,5 +1,5 @@
 import { loadGallery } from './modules/filter-gallery.js';
-import { setUserFormSubmit, closeUploadWindow} from './modules/upload-form.js';
+import { setUserFormSubmit} from './modules/upload-form.js';
 import { getData } from './modules/api.js';
 import { showAlert } from './modules/util.js';
 
@@ -11,4 +11,4 @@ getData()
     showAlert();
   });
 
-setUserFormSubmit(closeUploadWindow);
+setUserFormSubmit();

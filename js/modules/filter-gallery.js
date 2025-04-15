@@ -58,7 +58,6 @@ const applyFilter = (filter, array) => {
 };
 
 const initFilterSection = (array) => {
-  imageFilters.classList.remove('img-filters--inactive');
   if (filters) {
     filterButtonDefault.addEventListener('click', () => applyFilter(Filters.DEFAULT, array));
     filterButtonRandom.addEventListener('click', () => applyFilter(Filters.RANDOM, array));
@@ -69,6 +68,7 @@ const initFilterSection = (array) => {
 const loadGallery = (array) => {
   displaysPictures(array);
   initFilterSection(array);
+  imageFilters.classList.remove('img-filters--inactive');
 };
 
 export {loadGallery};
