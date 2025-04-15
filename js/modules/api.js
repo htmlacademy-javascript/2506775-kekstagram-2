@@ -23,8 +23,8 @@ const load = (route, errorText, method = Method.GET, body = null) =>
       }
       return response.json();
     })
-    .catch((err) => {
-      throw new Error(errorText ?? err.message);
+    .catch((error) => {
+      throw new Error(errorText ?? error.message);
     });
 
 const getData = () => load(Route.GET_DATA, ErrorText.GET_DATA);
