@@ -1,6 +1,6 @@
 import { isEscapeKey, showAlert,downloadSuccessMessage} from './util.js';
 import { sendData } from './api.js';
-import { initSlider, destroySlider} from './slider.js';
+import {getInitSlider, destroySlider} from './slider.js';
 import { uploadPhotoFile } from './load-photo.js';
 
 const HASHTAGS_COUNT = 5;
@@ -10,8 +10,11 @@ const ZOOM_STEP = 0.25;
 const MIN_ZOOM_VALUE = 0.25;
 const MAX_ZOOM_VALUE = 1;
 
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикую...'
+};
 
-let zoomValue = 1;
 
 const errorMessage = {
   invalidName: 'Введён невалидный хэштег',
@@ -20,30 +23,27 @@ const errorMessage = {
   commentsLength: 'Длина комментария больше 140 символов'
 };
 
+let zoomValue = 1;
 
-const SubmitButtonText = {
-  IDLE: 'Опубликовать',
-  SENDING: 'Публикую...'
-};
 
 const formUpload = document.querySelector('.img-upload__form');
 const imageUploadInput = formUpload.querySelector('.img-upload__input');
 const imageOverlay = formUpload.querySelector('.img-upload__overlay');
 const imageUploadCancel = formUpload.querySelector('.img-upload__cancel');
-const onUploadHashtag = formUpload.querySelector('.text__hashtags');
-const onUploadComment = formUpload.querySelector('.text__description');
+const uploadHashtag = formUpload.querySelector('.text__hashtags');
+const uploadComment = formUpload.querySelector('.text__description');
 const scaleControlSmaller = formUpload.querySelector('.scale__control--smaller');
 const scaleControlBigger = formUpload.querySelector('.scale__control--bigger');
 const scaleControl = formUpload.querySelector('.scale__control--value');
 const submitButton = formUpload.querySelector('.img-upload__submit');
 const imgUploadPrewiew = formUpload.querySelector('.img-upload__preview img');
 
-const blockSubmitButton = () => {
+const toblocksubmitButton = () => {
   submitButton.disabled = true;
   submitButton.textContent = SubmitButtonText.SENDING;
 };
 
-const unBlockSubmitButton = () => {
+const unblockSubmitButton = () => {
   submitButton.disabled = false;
   submitButton.textContent = SubmitButtonText.IDLE;
 };
@@ -67,13 +67,13 @@ const onDocumentKeyDown = (evt) => {
   }
 };
 
-const cancelKeyDown = (evt) => {
+const onCancelKeyDown = (evt) => {
   if(isEscapeKey(evt)){
     evt.stopPropagation();
   }
 };
 
-const onScaleControlSmallerClick = () => {
+const onClickScaleControlSmaller = () => {
   if(zoomValue > MIN_ZOOM_VALUE){
     zoomValue -= ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
@@ -81,7 +81,7 @@ const onScaleControlSmallerClick = () => {
   }
 };
 
-const onScaleControlBiggerClick = () => {
+const onClickScaleControlBigger = () => {
   if(zoomValue < MAX_ZOOM_VALUE){
     zoomValue += ZOOM_STEP;
     imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
@@ -96,25 +96,25 @@ const onOpenUploadWindow = () => {
   imgUploadPrewiew.style.transform = `scale(${zoomValue})`;
   imageOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  onUploadHashtag.addEventListener('keydown', cancelKeyDown);
-  onUploadComment.addEventListener('keydown', cancelKeyDown);
+  uploadHashtag.addEventListener('keydown', onCancelKeyDown);
+  uploadComment.addEventListener('keydown', onCancelKeyDown);
   document.addEventListener('keydown', onDocumentKeyDown);
-  scaleControlSmaller.addEventListener('click', onScaleControlSmallerClick);
-  scaleControlBigger.addEventListener('click', onScaleControlBiggerClick);
-  initSlider();
+  scaleControlSmaller.addEventListener('click', onClickScaleControlSmaller);
+  scaleControlBigger.addEventListener('click', onClickScaleControlBigger);
+  getInitSlider();
 };
 
 function closeUploadWindow() {
   imageUploadInput.value = '';
-  onUploadHashtag.value = '';
-  onUploadComment.value = '';
+  uploadHashtag.value = '';
+  uploadComment.value = '';
   imageOverlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeyDown);
-  onUploadHashtag.removeEventListener('focus', cancelKeyDown);
-  onUploadComment.removeEventListener('focus', cancelKeyDown);
-  scaleControlSmaller.removeEventListener('click', onScaleControlSmallerClick);
-  scaleControlBigger.removeEventListener('click', onScaleControlBiggerClick);
+  uploadHashtag.removeEventListener('focus', onCancelKeyDown);
+  uploadComment.removeEventListener('focus', onCancelKeyDown);
+  scaleControlSmaller.removeEventListener('click', onClickScaleControlSmaller);
+  scaleControlBigger.removeEventListener('click', onClickScaleControlBigger);
   destroySlider();
   resetValidation();
 }
@@ -151,10 +151,10 @@ const getHashtagsDuplicate = (element) => {
 const getCommentLength = (element) => element.length < COMMENT_LENGTH;
 
 
-pristine.addValidator(onUploadHashtag, getHashtagsName, errorMessage.invalidName);
-pristine.addValidator(onUploadHashtag, getHashtagsCount, errorMessage.hashtagsLimit);
-pristine.addValidator(onUploadHashtag, getHashtagsDuplicate, errorMessage.hashtagsRepeat);
-pristine.addValidator(onUploadComment, getCommentLength, errorMessage.commentsLength);
+pristine.addValidator(uploadHashtag, getHashtagsName, errorMessage.invalidName);
+pristine.addValidator(uploadHashtag, getHashtagsCount, errorMessage.hashtagsLimit);
+pristine.addValidator(uploadHashtag, getHashtagsDuplicate, errorMessage.hashtagsRepeat);
+pristine.addValidator(uploadComment, getCommentLength, errorMessage.commentsLength);
 
 const setUserFormSubmit = () => {
   formUpload.addEventListener('submit', (evt) => {
@@ -162,7 +162,7 @@ const setUserFormSubmit = () => {
 
     const isValid = pristine.validate();
     if(isValid){
-      blockSubmitButton();
+      toblocksubmitButton();
       sendData(new FormData(evt.target))
         .then(() => {
           closeUploadWindow();
@@ -171,7 +171,7 @@ const setUserFormSubmit = () => {
         .catch(() => {
           showAlert();
         })
-        .finally(unBlockSubmitButton);
+        .finally(unblockSubmitButton);
     }
   });
 };

@@ -22,7 +22,7 @@ const removeMessage = () => {
   document.removeEventListener('click', onDocumentClick);
 };
 
-const onButtonClick = () => {
+const onClickButton = () => {
   removeMessage();
 };
 
@@ -44,7 +44,7 @@ const showSuccess = (message) => {
   successMessage = message.cloneNode(true);
   const button = successMessage.querySelector('button');
   document.body.append(successMessage);
-  button.addEventListener('click', onButtonClick);
+  button.addEventListener('click', onClickButton);
   document.addEventListener('keydown', onDocumentKeydown);
   document.addEventListener('click', onDocumentClick);
   setTimeout(() => {

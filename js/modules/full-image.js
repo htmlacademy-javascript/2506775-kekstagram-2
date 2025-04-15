@@ -1,7 +1,8 @@
 import { isEscapeKey } from './util.js';
 
-let sliceCounterMin = 0;
 const SLICECOUNTERMAX = 5;
+let sliceCounterMin = 0;
+
 
 const windowWithBigPicture = document.querySelector('.big-picture');
 const сommentsLoader = windowWithBigPicture.querySelector('.comments-loader');
@@ -55,30 +56,30 @@ const openWindow = ({comments, url, likes, description}) => {
   descriptionOnWindow.textContent = description;
 
 
-  const onCommentsLoaderClick = () => {
+  const onLoadCommentsClick = () => {
     showComments(comments);
   };
 
-  сommentsLoader.addEventListener('click', onCommentsLoaderClick);
+  сommentsLoader.addEventListener('click', onLoadCommentsClick);
 
-  onCommentsLoaderClick();
+  onLoadCommentsClick();
 
 
-  const onDocumentKeyDown = (evt) => {
+  const onPressDocumentKeyDown = (evt) => {
     if(isEscapeKey(evt)){
       evt.preventDefault();
       removeBigWindow();
     }
   };
 
-  document.addEventListener('keydown', onDocumentKeyDown);
+  document.addEventListener('keydown',onPressDocumentKeyDown);
 
 
   function removeBigWindow() {
     windowWithBigPicture.classList.add('hidden');
     document.querySelector('body').classList.remove('modal-open');
-    document.removeEventListener('keydown', onDocumentKeyDown);
-    сommentsLoader.removeEventListener('click', onCommentsLoaderClick);
+    document.removeEventListener('keydown', onPressDocumentKeyDown);
+    сommentsLoader.removeEventListener('click', onLoadCommentsClick);
     sliceCounterMin = 0;
   }
 
